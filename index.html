@@ -26,6 +26,7 @@
       if (isEmpty(row,col)) {
         display(row,col, player)
         board[row][col] = 1
+        sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
         numTurns ++
         
         if (wins(1)) {
@@ -74,6 +75,7 @@
         board[1][2] = player
         document.f1.b12.value = p
       }
+      sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
     }
 
     function display(row,col, p)     {
@@ -158,6 +160,7 @@
       // ... place a token in the corner if the center is taken...
       if (board[1][1]==usr) {
         board[0][0]=comp
+        sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
         display(0,0,computer)
         return
       }
@@ -165,6 +168,7 @@
       // if ((board[0][0]==usr)||(board[2][0]==usr)||(board[2][2]==usr)||(board[0][2]==usr)) {
         else {
           board[1][1]=comp
+          sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
           display(1,1,computer)
           return
         }      
@@ -176,38 +180,46 @@
 
       // check if computer can finish a 3-in-a-row
       if(horiz(comp)) {
+        sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
         return
       }
 
       if(vert(comp)) {
+        sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
         return
       }
 
       if (diag1(comp)) {
+        sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
         return
       }
       if (diag2(comp)) {
+        sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
         return
       }
       // check if computer can block a human's 3-in-a-row
       if(horiz(usr)) {
+        sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
         return
       }
 
       if(vert(usr)) {
+        sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
         return
       }
 
       if (diag1(usr)) {
+        sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
         return
       }
       if (diag2(usr)) {
+        sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
         return
       }
       if (numTurns == 4) {
         if ((board[0][0]==usr)||(board[2][0]==usr)||(board[2][2]==usr)||(board[0][2]==usr)) {
           for (i = 0; i< sides.length; i++) {
-            if (sides[i] == 0) {
+            if ((sides[i] == 0)&(sides[(i+2)%3]==0)) {
               markSide(i, comp, computer)
               return
             }
@@ -221,6 +233,7 @@
     }
 
     randomMove()
+    sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
     
   }
 
@@ -237,6 +250,7 @@
         for (j = 0; j< board[i].length; j++) {
           if (isEmpty(i,j))
             { board[i][j] = comp
+              sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
               display(i,j,computer)
               return true
             }
@@ -261,6 +275,7 @@
           for (j = 0; j< board[i].length; j++) {
             if (isEmpty(j,i)) { 
               board[j][i] = comp
+              sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
               display(j, i, computer)
               return true
             }
@@ -283,6 +298,7 @@
         for (i = 0; i<board.length; i++) {
           if (isEmpty(i,i)) {              
             board[i][i] = comp
+            sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
             display(i,i,computer)
             return true
           }
@@ -307,6 +323,7 @@
         for (i = 0; i<board.length; i++) {
           if (isEmpty(i,j)) {
             board[i][j] = comp
+            sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
             display(i,j,computer)
             return true
           }
@@ -327,6 +344,7 @@
           for (j = 0; j< board[i].length; j++) {
             if (isEmpty(i,j))
               { board[i][j] = comp
+                sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
                 display(i,j,computer)
                 return true
               }
@@ -347,6 +365,7 @@
             for (j = 0; j< board[i].length; j++) {
               if (isEmpty(j,i)) { 
                 board[j][i] = comp
+                sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
                 display(j, i, computer)
                 return true
               }
@@ -364,6 +383,7 @@
           for (i = 0; i<board.length; i++) {
             if (isEmpty(i,i)) {              
               board[i][i] = comp
+              sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
               display(i,i,computer)
               return true
             }
@@ -383,6 +403,7 @@
           for (i = 0; i<board.length; i++) {
             if (isEmpty(i,j)) {
               board[i][j] = comp
+              sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
               display(i,j,computer)
               return true
             }
@@ -404,6 +425,7 @@
           col =  Math.floor(Math.random() * 3)
         }
         board[row][col] = comp
+        sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
         display(row,col,computer)
       }
 
@@ -412,6 +434,7 @@
         for (i = 0; i< board.length; i++) {
           for (j = 0; j< board[i].length; j++)
             board[i][j] = 0
+          sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
         }
 
         document.f1.b00.value = "        "
