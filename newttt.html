@@ -6,6 +6,7 @@
 
     var computer, player, comp, usr, numTurns
     board = [[0,0,0],[0,0,0],[0,0,0]]; 
+    sides = [board[0][1],board[1][0],board[2][1],board[1][2]]
     startGame()
 
     function startGame() {      
@@ -54,6 +55,25 @@
           refresh()
           return
         }
+      }
+    }
+
+    function markSide(i,player,p) {
+      if (i==0) {
+        board[0][1] = player
+        document.f1.b01.value = p
+      }
+      if (i==1) {
+        board[1][0] = player
+        document.f1.b10.value = p
+      }
+      if (i==2) {
+        board[2][1] = player
+        document.f1.b21.value = p
+      }
+      if (i==3) {
+        board[1][2] = player
+        document.f1.b12.value = p
       }
     }
 
@@ -143,14 +163,16 @@
         return
       }
       // ... or place a token in the center if a corner is taken
-      if ((board[0][0]==usr)||(board[2][0]==usr)||(board[2][2]==usr)||(board[0][2]==usr)) {
-        board[1][1]=comp
-        display(1,1,computer)
-        return
-      }      
+      // if ((board[0][0]==usr)||(board[2][0]==usr)||(board[2][2]==usr)||(board[0][2]==usr)) {
+        else {
+          board[1][1]=comp
+          display(1,1,computer)
+          return
+        }      
       // otherwise, pick random move.
     }
-    // When more than one token is on the board...
+    
+    
     else {
 
       // check if computer can finish a 3-in-a-row
@@ -183,7 +205,21 @@
       if (diag2(usr)) {
         return
       }
+      if(fork()) {
+        return
+      }
+      if (numTurns == 4) {
+        if ((board[0][0]==usr)||(board[2][0]==usr)||(board[2][2]==usr)||(board[0][2]==usr)) {
+          for (i = 0; i< sides.length; i++) {
+            if (sides[i] == 0) {
+              markSide(i, comp, computer)
+              return
+            }
+          }
+        }
+      }
     }
+
     randomMove()
     
   }
@@ -280,57 +316,136 @@
       return false
     }
 
+    function fork() {
+      var count = 0
+      for (i = 0; i< board.length; i++) {
+        for (j = 0; j< board[i].length; j++)  {
+          if (board[i][j] != 0)
+            count++
+        }
+        if (count == 1)  {
+          for (j = 0; j< board[i].length; j++) {
+            if (isEmpty(i,j))
+              { board[i][j] = comp
+                display(i,j,computer)
+                return true
+              }
+            }
 
-    function randomMove() {  
-      row = Math.floor(Math.random() * 3)
-      col =  Math.floor(Math.random() * 3)
-      while (isEmpty(row,col) != true) { 
+          }
+          count = 0
+        }
+
+
+        var count = 0
+        for (i = 0; i< board.length; i++) {
+          for (j = 0; j< board[i].length; j++) {
+            if (board[j][i] != 0)
+              count++
+          }
+          if (count == 1)  { 
+            for (j = 0; j< board[i].length; j++) {
+              if (isEmpty(j,i)) { 
+                board[j][i] = comp
+                display(j, i, computer)
+                return true
+              }
+            }
+          }
+          count = 0
+        }
+
+        var count  = 0
+        for (i =0; i< board.length; i++)  {
+          if (board[i][i] != 0)
+            count++
+        }
+        if (count == 1) { 
+          for (i = 0; i<board.length; i++) {
+            if (isEmpty(i,i)) {              
+              board[i][i] = comp
+              display(i,i,computer)
+              return true
+            }
+          }
+        }
+
+        var count = 0
+        var j = 2
+        for (i = 0; i<board.length; i++)  {  
+          if (board[i][j] != 0)
+            count++
+          j--
+        } 
+
+        if (count == 1) { 
+          var j = 2
+          for (i = 0; i<board.length; i++) {
+            if (isEmpty(i,j)) {
+              board[i][j] = comp
+              display(i,j,computer)
+              return true
+            }
+            j--
+          }
+        }
+
+
+        return false
+
+      }
+
+
+      function randomMove() {  
         row = Math.floor(Math.random() * 3)
         col =  Math.floor(Math.random() * 3)
-      }
-      board[row][col] = comp
-      display(row,col,computer)
-    }
-
-
-    function clearBoard() {
-      for (i = 0; i< board.length; i++) {
-        for (j = 0; j< board[i].length; j++)
-          board[i][j] = 0
+        while (isEmpty(row,col) != true) { 
+          row = Math.floor(Math.random() * 3)
+          col =  Math.floor(Math.random() * 3)
+        }
+        board[row][col] = comp
+        display(row,col,computer)
       }
 
-      document.f1.b00.value = "        "
-      document.f1.b01.value = "        "
-      document.f1.b02.value = "        "
-      document.f1.b10.value = "        "
-      document.f1.b11.value = "        "
-      document.f1.b12.value = "        "
-      document.f1.b20.value = "        "
-      document.f1.b21.value = "        "
-      document.f1.b22.value = "        "
-    }
+
+      function clearBoard() {
+        for (i = 0; i< board.length; i++) {
+          for (j = 0; j< board[i].length; j++)
+            board[i][j] = 0
+        }
+
+        document.f1.b00.value = "        "
+        document.f1.b01.value = "        "
+        document.f1.b02.value = "        "
+        document.f1.b10.value = "        "
+        document.f1.b11.value = "        "
+        document.f1.b12.value = "        "
+        document.f1.b20.value = "        "
+        document.f1.b21.value = "        "
+        document.f1.b22.value = "        "
+      }
 
 
-    </script> 
-  </HEAD> 
-  <BODY> 
+      </script> 
+    </HEAD> 
+    <BODY> 
 
-    <form name = f1> 
-     <center> 
-      <input type = button name = b00 value = "        " onclick = processInput(0,0) > 
-      <input type = button name = b01 value = "        " onclick = processInput(0,1) > 
-      <input type = button name = b02 value = "        " onclick = processInput(0,2) ><BR> 
-      <input type = button name = b10 value = "        " onclick = processInput(1,0) > 
-      <input type = button name = b11 value = "        " onclick = processInput(1,1) > 
-      <input type = button name = b12 value = "        " onclick = processInput(1,2) ><BR> 
-      <input type = button name = b20 value = "        " onclick = processInput(2,0) > 
-      <input type = button name = b21 value = "        " onclick = processInput(2,1) > 
-      <input type = button name = b22 value = "        " onclick = processInput(2,2) ><BR> 
-    </center> 
+      <form name = f1> 
+       <center> 
+        <input type = button name = b00 value = "        " onclick = processInput(0,0) > 
+        <input type = button name = b01 value = "        " onclick = processInput(0,1) > 
+        <input type = button name = b02 value = "        " onclick = processInput(0,2) ><BR> 
+        <input type = button name = b10 value = "        " onclick = processInput(1,0) > 
+        <input type = button name = b11 value = "        " onclick = processInput(1,1) > 
+        <input type = button name = b12 value = "        " onclick = processInput(1,2) ><BR> 
+        <input type = button name = b20 value = "        " onclick = processInput(2,0) > 
+        <input type = button name = b21 value = "        " onclick = processInput(2,1) > 
+        <input type = button name = b22 value = "        " onclick = processInput(2,2) ><BR> 
+      </center> 
 
-  </form> 
+    </form> 
 
 
-</BODY> 
+  </BODY> 
 </HTML> 
 
