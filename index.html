@@ -219,7 +219,7 @@
       if (numTurns == 4) {
         if ((board[0][0]==usr)||(board[2][0]==usr)||(board[2][2]==usr)||(board[0][2]==usr)) {
           for (i = 0; i< sides.length; i++) {
-            if ((sides[i] == 0)&(sides[(i+2)%3]==0)) {
+            if ((sides[i] == 0)&(sides[(i+2)%4]==0)) {
               markSide(i, comp, computer)
               return
             }
