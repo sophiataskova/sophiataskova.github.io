@@ -170,7 +170,7 @@ function clearBoard() {
 
         if (board[i]==undefined){  // look for available moves
           board[i] = player; // make move
-          cur = -search(depth + 1, -player, -beta, -alpha);
+          cur = -negamax(depth + 1, -player, -beta, -alpha);
           
           if (cur > bestValue || bestValue == undefined) {
             bestValue = cur;
