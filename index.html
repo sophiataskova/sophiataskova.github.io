@@ -7,6 +7,8 @@
   var grid = 3;
   var combos = [];
   var board = [];
+  // var intelligence = 6;
+  // var undef;
 
   // calculate all winning combos
   for (i = 0, c = [], d = []; i < grid; i++){
@@ -21,12 +23,13 @@
   combos.push(c, d);
 
   function processInput (move) {
-    if (!board[move]){
+    if (!board[move]) {
       display(move, -1);
       if (chk(0) < 0) {          
        alert("You win!");  clearBoard(); return;       
      }
      next = negamax(0, 1, -100, 100);
+     // next = search(0, 1, -100, 100);
      if (next==undefined) {
       clearBoard();
       alert("This was a tie.");  clearBoard(); return;
@@ -36,7 +39,6 @@
       clearBoard();
       alert("You lose.");  clearBoard(); return;
     }
-
   }   
 }
 
@@ -150,7 +152,9 @@ function clearBoard() {
   function negamax(depth, player, alpha, beta){
 
     var next;
-    
+    var bestValue;
+    var min = -100;
+    var max;
     var val;
     
     if (chk(depth)) {
@@ -158,29 +162,34 @@ function clearBoard() {
       return player * val;
     }
 
-    var bestValue = -100;
-    var max;
-    
+
+
     if (depth < 10) {    
       for(var i=0; i<9; i++){ 
+
+
         if (board[i]==undefined){  // look for available moves
           board[i] = player; // make move
-          val = -negamax(depth + 1, -player, -beta, -alpha); // call other player, switching signs
-          if (val > bestValue) {
-            bestValue = val;
-            next = i;            
+          cur = -search(depth + 1, -player, -beta, -alpha);
+          
+          if (cur > bestValue || bestValue == undefined) {
+            bestValue = cur;
           }
-          if (bestValue > alpha) {
-            alpha = bestValue;
-          }
-          board[i] = undefined; // undo move
-          if (alpha >= beta) return alpha; // cut off branch
+          if (bestValue > alpha) alpha = bestValue;
+          board[i] = undefined;
+          if (alpha >= beta) return alpha; // prune branch
+          if (bestValue > min){ 
+            min = bestValue;
+             next = i; 
+           }
           
         }
+
       } 
     } 
     if (depth > 0) {
       return bestValue || 0; // 0 means a tie
+      
     }
     else return next;
   }
