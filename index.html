@@ -10,17 +10,21 @@
     if (!board[move]) {
       display(move, -1);
       if (wins(0) < 0) {          
-        alert("You win!");  clearBoard(); return;       
+        alert("You win!");  
+        clearBoard(); 
+        return;       
       }
       next = alhpabeta(0, 1, -100, 100); // alpha = -∞, beta = ∞ ; player is 1 for user and -1 for computer
       if (next==undefined) {
-        clearBoard();
-        alert("This was a tie.");  clearBoard(); return;
+        alert("This was a tie.");  
+        clearBoard(); 
+        return;
       }
       display(next); 
       if (wins(0) > 0) {
-        clearBoard();
-        alert("You lose.");  clearBoard(); return;
+        alert("You lose.");  
+        clearBoard(); 
+        return;
       }
     }   
   }
