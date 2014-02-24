@@ -1,98 +1,50 @@
-<!doctype html> 
-<html lang="en">
+
+<html>
 <head>
-  <meta charset="utf-8">
   <title>Tic Tac Toe</title>
-  <script type="text/javascript" charset="utf-8">
-  var grid = 3;
-  var combos = [];
+  <script type="text/javascript">
+  var combinations = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
   var board = [];
-  // var intelligence = 6;
-  // var undef;
 
-  // calculate all winning combos
-  for (i = 0, c = [], d = []; i < grid; i++){
-    for (j = 0, a = [], b = []; j < grid; j++){
-      a.push(i * grid + j);
-      b.push(j * grid + i);
-    }
-    combos.push(a, b);
-    c.push(i * grid + i);
-    d.push((grid - i - 1) * grid + i);
-  }
-  combos.push(c, d);
-
-  function processInput (move) {
+  function processInput (move) { 
     if (!board[move]) {
       display(move, -1);
-      if (chk(0) < 0) {          
-       alert("You win!");  clearBoard(); return;       
-     }
-     next = negamax(0, 1, -100, 100);
-     // next = search(0, 1, -100, 100);
-     if (next==undefined) {
-      clearBoard();
-      alert("This was a tie.");  clearBoard(); return;
-    }
-    display(next);
-    if (chk(0) > 0) {
-      clearBoard();
-      alert("You lose.");  clearBoard(); return;
-    }
-  }   
-}
-
-  // method to check if game won
-  // uses depth to give higher values to quicker wins
-  function chk(depth){
-    for (var i=0; i<combos.length; i++) {
-      j = x = o = grid;
-      while(j--){
-        k = combos[i][j];
-        board[k] > 0 && x--;
-        board[k] < 0 && o--;
+      if (wins(0) < 0) {          
+        alert("You win!");  clearBoard(); return;       
       }
-      if (!x) return 100 - depth; // x won
-      if (!o) return depth - 100; // o won
+      next = alhpabeta(0, 1, -100, 100); // alpha = -∞, beta = ∞ ; player is 1 for user and -1 for computer
+      if (next==undefined) {
+        clearBoard();
+        alert("This was a tie.");  clearBoard(); return;
+      }
+      display(next); 
+      if (wins(0) > 0) {
+        clearBoard();
+        alert("You lose.");  clearBoard(); return;
+      }
+    }   
+  }
+  function wins(d){  // returns < 0 if computer wins and >0 if user wins
+    for (c in combinations){
+      x = o = 0;
+      for (var j = 2; j >= 0; j--) {
+        k = combinations[c][j];
+        if (board[k] > 0) { // if cell is taken by x
+          x++;
+        }
+        if (board[k] < 0) { // if cell is taken by o
+          o++;
+        }
+      }
+      if (x==3){ // user wins
+        return 100 - d; 
+      } 
+      if (o==3) {
+        return d - 100; // computer wins
+      } 
     }
   }
 
-  function wins(val) {
-   if (board[0] == val && board[1] == val && board[2] == val) {
-    return true
-  }
-
-  else  if (board[3] == val && board[4] == val && board[5] == val) {
-    return true
-  }
-
-  else  if (board[6] == val && board[7] == val && board[8] == val) {
-    return true
-  }
-
-  else  if (board[0] == val && board[4] == val && board[8] == val) {
-    return true
-  }
-
-  else  if (board[2] == val && board[4] == val && board[6] == val) {
-    return true
-  }
-
-  else  if (board[0] == val && board[3] == val && board[6] == val) {
-    return true
-  }
-
-  else  if (board[1] == val && board[4] == val && board[7] == val) {
-    return true
-  }
-
-  else  if (board[2] == val && board[5] == val && board[8] == val) {
-    return true
-  }
-
-  else
-    return false
-}
 
 function display(i, o)     {
   board[i] = o || 1;
@@ -108,10 +60,10 @@ function display(i, o)     {
   }
   col = i%3;
   if (o == -1) {
-    p = "   o   ";
+    p = "   X   ";
   }
   else {
-    p = "   x   ";
+    p = "   0   ";
   }
   if (row == 0 && col == 0)
     document.leform.b00.value = p
@@ -148,68 +100,68 @@ function clearBoard() {
   document.leform.b22.value = "        "
 }
 
-  // "The Alpha-Beta Algorithm" https://www.cs.unm.edu/~aaron/downloads/qian_search.pdf
-  function negamax(depth, player, alpha, beta){
+// "The Alpha-Beta Algorithm" https://www.cs.unm.edu/~aaron/downloads/qian_search.pdf
+// d: search depth
+function alhpabeta(d, player, alpha, beta){
 
-    var next;
-    var bestValue;
-    var min = -100;
-    var max;
-    var val;
-    
-    if (chk(depth)) {
-      val = chk(depth);    
-      return player * val;
-    }
+  var next;
+  var score;
+  var min = -100;
+  var val;
 
-
-
-    if (depth < 10) {    
-      for(var i=0; i<9; i++){ 
-
-
-        if (board[i]==undefined){  // look for available moves
-          board[i] = player; // make move
-          cur = -negamax(depth + 1, -player, -beta, -alpha);
-          
-          if (cur > bestValue || bestValue == undefined) {
-            bestValue = cur;
-          }
-          if (bestValue > alpha) alpha = bestValue;
-          board[i] = undefined;
-          if (alpha >= beta) return alpha; // prune branch
-          if (bestValue > min){ 
-            min = bestValue;
-             next = i; 
-           }
-          
-        }
-
-      } 
-    } 
-    if (depth > 0) {
-      return bestValue || 0; // 0 means a tie
-      
-    }
-    else return next;
+  if (wins(d)) {
+    val = wins(d);    
+    return player * val; // evaluate leaf position from current player’s standpoint
   }
-  </script>
+
+
+  if (d < 10) {    // chose 10 for depth so as to keep moves relatively fast
+    for(var i=0; i<9; i++){ 
+      if (board[i]==undefined){  // look for available moves
+        board[i] = player; // make move
+        cur = -alhpabeta(d + 1, -player, -beta, -alpha);
+
+        if (cur > score || score == undefined) {
+          score = cur;
+        }
+        if (score > alpha) {
+          alpha = score;
+        }
+        board[i] = undefined; // retract current move
+        if (alpha >= beta) {
+          return alpha; // cut off branch
+        }
+        if (score > min){ 
+          min = score;
+          next = i; 
+        }
+      }
+    } 
+  } 
+
+  if (d > 0) {
+    return score || 0; // 0 means a tie
+  }
+
+  else return next;
+}
+</script>
 </head>
 
 <body>
   <form name = leform> 
-   <center> 
-    <input type = button name = b00 value = "        " onclick = processInput(0) > 
-    <input type = button name = b01 value = "        " onclick = processInput(1) > 
-    <input type = button name = b02 value = "        " onclick = processInput(2) ><BR> 
-    <input type = button name = b10 value = "        " onclick = processInput(3) > 
-    <input type = button name = b11 value = "        " onclick = processInput(4) > 
-    <input type = button name = b12 value = "        " onclick = processInput(5) ><BR> 
-    <input type = button name = b20 value = "        " onclick = processInput(6) > 
-    <input type = button name = b21 value = "        " onclick = processInput(7) > 
-    <input type = button name = b22 value = "        " onclick = processInput(8) ><BR> 
-  </center> 
+    <center> 
+      <input type = button name = b00 value = "        " onclick = processInput(0) > 
+      <input type = button name = b01 value = "        " onclick = processInput(1) > 
+      <input type = button name = b02 value = "        " onclick = processInput(2) ><BR> 
+      <input type = button name = b10 value = "        " onclick = processInput(3) > 
+      <input type = button name = b11 value = "        " onclick = processInput(4) > 
+      <input type = button name = b12 value = "        " onclick = processInput(5) ><BR> 
+      <input type = button name = b20 value = "        " onclick = processInput(6) > 
+      <input type = button name = b21 value = "        " onclick = processInput(7) > 
+      <input type = button name = b22 value = "        " onclick = processInput(8) ><BR> 
+    </center> 
 
-</form> 
+  </form> 
 </body>
 </html>
