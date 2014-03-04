@@ -5,7 +5,6 @@
   <script type="text/javascript">
   var combinations = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
   var board = [];
-
   function processInput (move) { 
     if (!board[move]) {
       display(move, -1);
@@ -69,39 +68,14 @@ function display(i, o)     {
   else {
     p = "   0   ";
   }
-  if (row == 0 && col == 0)
-    document.leform.b00.value = p
-  else if (row == 0 && col == 1)
-    document.leform.b01.value = p
-  else if (row == 0 && col == 2)
-    document.leform.b02.value = p
-  else if (row == 1 && col == 0)
-    document.leform.b10.value = p
-  else if (row == 1 && col == 1)
-    document.leform.b11.value = p
-  else if (row == 1 && col == 2)
-    document.leform.b12.value = p
-  else if (row == 2 && col == 0)
-    document.leform.b20.value = p
-  else if (row == 2 && col == 1)
-    document.leform.b21.value = p
-  else if (row == 2 && col == 2) 
-    document.leform.b22.value =p
+  document.leform["b"+row+col].value = p
 }
 
 function clearBoard() {
   for (i = 0; i< board.length; i++) {
     board[i] = undefined;
+    document.leform.childNodes[1].getElementsByTagName('input')[i].value = "        "
   }
-  document.leform.b00.value = "        "
-  document.leform.b01.value = "        "
-  document.leform.b02.value = "        "
-  document.leform.b10.value = "        "
-  document.leform.b11.value = "        "
-  document.leform.b12.value = "        "
-  document.leform.b20.value = "        "
-  document.leform.b21.value = "        "
-  document.leform.b22.value = "        "
 }
 
 // "The Alpha-Beta Algorithm" https://www.cs.unm.edu/~aaron/downloads/qian_search.pdf
